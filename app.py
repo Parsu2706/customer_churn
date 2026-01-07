@@ -20,12 +20,18 @@ def get_dataset():
         st.sidebar.success("CSV uploaded")
     else : 
         df = load_default_dataset()
-        st.sidebar.info("Using default dataset")
+        if df is None : 
+            st.sidebar.warning("No default dataset found . Please upload a csv")
+            return None
+
     df = drop_customer_id(df)
     return df
 
 if page == "Dataset Overview":
     df = get_dataset()
+    if df is None: 
+        st.info('Please upload a CSV file to view dataset overview.')
+        st.stop()
     dataset_overview(df)
 
 if page == "Churn Prediction":
