@@ -1,0 +1,10 @@
+churn/
+__pycache__/
+.ipynb_checkpoints/
+mlruns/
+mlflow.db
+
+data/raw/
+.DS_Store
+Thumbs.db
+*.log
