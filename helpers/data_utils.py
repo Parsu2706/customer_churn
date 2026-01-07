@@ -1,7 +1,11 @@
 import pandas as pd
+import os 
 
-def load_default_dataset(path=r"C:\Users\Prasad.LAPTOP-R00KVI21\OneDrive\Desktop\Customer_churn_pred\data\raw\churn_dataset.csv") -> pd.DataFrame:
-    return pd.read_csv(path)
+def load_default_dataset(path="data/raw/churn_dataset.csv"):
+    if os.path.exists(path):
+        return pd.read_csv(path)
+    else:
+        return None
 
 def load_uploaded_csv(uploaded_file) -> pd.DataFrame:
     return pd.read_csv(uploaded_file)
