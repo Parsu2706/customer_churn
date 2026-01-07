@@ -8,3 +8,7 @@ data/raw/
 .DS_Store
 Thumbs.db
 *.log
+artifacts/
+notebook/
+sample_batch.csv
+
