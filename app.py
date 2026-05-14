@@ -137,9 +137,19 @@ if page == "Churn Prediction":
         else:
             st.warning(f"Low Risk if Churn:{probability:.1f}%")
 
-st.subheader("Batch PRediction")
+st.subheader("Batch Prediction")
 if uploaded_file:
+
     batch_df = get_dataset()
+
+    if batch_df is None:
+        st.stop()
+
+    df_batch = total_services_col(batch_df)
+
+    probs = predict_churn_proba(pipeline, df_batch)
+
+    df_batch["Churn_Probability"] = probs * 100
     df_batch = total_services_col(batch_df)
     probs = predict_churn_proba(pipeline, df_batch)
     df_batch["Churn_Probability"] = probs * 100
