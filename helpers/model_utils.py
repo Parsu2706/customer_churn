@@ -1,9 +1,9 @@
 import joblib
 
 import os
-import joblib
 
 model_path = os.getenv("model_path", "models/churn_pipeline.pkl")
+
 
 def load_pipeline():
     return joblib.load(model_path)

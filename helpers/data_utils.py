@@ -1,5 +1,6 @@
 import pandas as pd
-import os 
+import os
+
 
 def load_default_dataset(path="data/raw/churn_dataset.csv"):
     if os.path.exists(path):
@@ -7,8 +8,10 @@ def load_default_dataset(path="data/raw/churn_dataset.csv"):
     else:
         return None
 
+
 def load_uploaded_csv(uploaded_file) -> pd.DataFrame:
     return pd.read_csv(uploaded_file)
+
 
 def drop_customer_id(df):
     if df is None:
