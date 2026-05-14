@@ -1,0 +1,6 @@
+churn/
+__pycache__/
+*.pyc
+data/
+mlruns/
+.git/
