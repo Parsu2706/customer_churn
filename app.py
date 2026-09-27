@@ -146,11 +146,6 @@ if uploaded_file:
         st.stop()
 
     df_batch = total_services_col(batch_df)
-
-    probs = predict_churn_proba(pipeline, df_batch)
-
-    df_batch["Churn_Probability"] = probs * 100
-    df_batch = total_services_col(batch_df)
     probs = predict_churn_proba(pipeline, df_batch)
     df_batch["Churn_Probability"] = probs * 100
 
