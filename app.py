@@ -4,10 +4,15 @@ import streamlit as st
 from helpers.overview import dataset_overview
 from helpers.data_utils import load_default_dataset, load_uploaded_csv, drop_customer_id
 from helpers.feature_engineering import total_services_col
-from helpers.model_utils import load_pipeline, predict_churn_proba
+from helpers.model_utils import load_pipeline , load_threshold , predict_churn_proba , risk_level
+
 
 
 st.set_page_config(page_title="Customer Churn Prediction", layout="centered")
+
+pipeline = st.cache_resource(load_pipeline)()
+THRESHOLD = load_threshold()
+
 
 page = st.sidebar.selectbox("Navigation", ["Dataset Overview", "Churn Prediction"])
 
@@ -36,7 +41,6 @@ if page == "Dataset Overview":
     dataset_overview(df)
 
 if page == "Churn Prediction":
-    pipeline = load_pipeline()
     st.title("Customer Churn Prediction")
     st.header("Customer Input")
     col1, col2 = st.columns(2)
@@ -128,14 +132,19 @@ if page == "Churn Prediction":
     input_df = total_services_col(input_df)
 
     if st.button("Predict Churn"):
-        probability = predict_churn_proba(pipeline, input_df)[0] * 100
+        prob = predict_churn_proba(pipeline , input_df)[0]
+        level = risk_level(prob , THRESHOLD)
+        msg = f"{level}: {prob:.1%} churn probability"
+        if level == "High Risk":
+            st.error(msg)
+        elif level == "Medium Risk":
+            st.warning(msg)
 
-        if probability >= 70:
-            st.error(f"High Risk of Churn : {probability:.1f}%")
-        elif probability >= 40:
-            st.warning(f"Medium Risk of churn:{probability:.1f}%")
         else:
-            st.warning(f"Low Risk if Churn:{probability:.1f}%")
+            st.success(msg)
+
+
+
 
 st.subheader("Batch Prediction")
 if uploaded_file:
@@ -148,16 +157,7 @@ if uploaded_file:
     df_batch = total_services_col(batch_df)
     probs = predict_churn_proba(pipeline, df_batch)
     df_batch["Churn_Probability"] = probs * 100
-
-    def risk(p):
-        if p >= 70:
-            return "High Risk"
-        elif p >= 40:
-            return "Medium Risk"
-        else:
-            return "Low Risk"
-
-    df_batch["Risk_Level"] = df_batch["Churn_Probability"].apply(risk)
+    df_batch["Risk_Level"] = [risk_level(p, THRESHOLD) for p in probs]
     st.dataframe(df_batch)
     st.download_button(
         "Download_Predictions",
